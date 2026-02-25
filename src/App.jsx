@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const sounds = [
+  { name: "Airhorn", file: "airhorn.mp3", emoji: "📢" },
+  { name: "Boo", file: "boo.mp3", emoji: "👎" },
+  { name: "Applause", file: "applause.mp3", emoji: "👏" },
+  { name: "Lets Go", file: "letsgo.mp3", emoji: "🔥" },
+];
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+export default function App() {
+  const audioRef = useRef(null);
+
+  const playSound = (file) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const audio = new Audio(`/sounds/${file}`);
+    audioRef.current = audio;
+    audio.play();
+  };
+
+return (
+  <div className="app">
+    <div className="shell">
+      <h1>🔥 Bachelor Board 🔥</h1>
+      <div className="grid">
+        {sounds.map((sound) => (
+          <button
+            key={sound.file}
+            onClick={() => playSound(sound.file)}
+            className="soundBtn"
+          >
+            <span className="emoji">{sound.emoji}</span>
+            <span className="label">{sound.name}</span>
+          </button>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  </div>
+);
 }
-
-export default App
