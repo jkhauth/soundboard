@@ -20,20 +20,26 @@ export default function App() {
   const audioRef = useRef(null);
 
 const playSound = (file) => {
-  // 1. Stop the previous sound immediately
+  // 1. Get the base path (e.g., '/' locally or '/your-repo-name/' on GitHub)
+  const base = import.meta.env.BASE_URL;
+  
+  // 2. Stop the previous sound immediately
   if (audioRef.current) {
     audioRef.current.pause();
-    audioRef.current.currentTime = 0; // Reset to start
+    audioRef.current.currentTime = 0;
   }
 
-  // 2. Create new instance
-  // Ensure the path matches your 'public' folder structure
-  const audio = new Audio(`/sounds/${file}`); 
+  // 3. Create new instance using the base path
+  // We ensure there's exactly one slash between the base and the sounds folder
+  const cleanBase = base.endsWith('/') ? base : `${base}/`;
+  const audio = new Audio(`${cleanBase}sounds/${file}`); 
+  
   audioRef.current = audio;
 
-  // 3. Play and catch potential browser "Autoplay" or "Interrupted" errors
+  // 4. Play and handle errors
   audio.play().catch((err) => {
-    console.error("Playback failed:", err);
+    // This usually happens if the user hasn't interacted with the page yet
+    console.error("Playback failed. Ensure you've clicked the page first!", err);
   });
 };
 
